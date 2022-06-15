@@ -27,13 +27,8 @@ const useScrollByPageMove = () => {
 
     // 뒤로가기 시..
     router.beforePopState(() => {
-      console.log(cacheScrollPositions);
-      console.log(shouldScrollRestore);
-
       if (cacheScrollPositions.length > 0) {
         const scrollPosition = cacheScrollPositions.pop();
-
-        console.log(scrollPosition);
 
         if (scrollPosition) {
           shouldScrollRestore = {
