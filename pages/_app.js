@@ -1,4 +1,7 @@
 import "../styles/globals.css";
+
+import useScrollByPageMove from "../src/hook/useScrollByPageMove";
+
 /*
 
   컴포넌트 마다 페이지 렌더는 여기서 발생..
@@ -11,7 +14,12 @@ import "../styles/globals.css";
 */
 
 function MyApp({ Component, pageProps }) {
-  return <Component {...pageProps} />;
+  useScrollByPageMove();
+  useScrollByPageMove;
+
+  const getLayout = Component.getLayout || ((page) => page);
+
+  return getLayout(<Component {...pageProps} />);
 }
 
 export default MyApp;

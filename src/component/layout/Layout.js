@@ -7,12 +7,14 @@ const Layout = ({ children }) => {
     <>
       <Header>
         <Link href={"/"}>홈</Link>
-        <Link href={"/list/list"} as={"/list"}>
+        <Link href={"/list/list"} as={"/list/list"}>
           리스트
         </Link>
       </Header>
       <Main>{children}</Main>
-      <Footer>푸터</Footer>
+      <Footer>
+        <Link href={"/"}>홈</Link>
+      </Footer>
     </>
   );
 };

@@ -1,23 +1,51 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useRouter } from "next/router";
 
 const useScrollByPageMove = () => {
-  // const { viewStore } = IRootStore;
   const router = useRouter();
-  const [pathname, setPathname] = useState(router.pathname);
 
   useEffect(() => {
-    const scrollHandler = function () {
-      // viewStore.setScrollY(router.pathname); // router.pathname은 현재 페이지 경로
-    };
+    window.history.scrollRestoration = "auto";
 
-    window.addEventListener("scroll", scrollHandler);
-    setPathname(router.pathname);
+    const cacheScrollPositions = [];
+    let shouldScrollRestore = {};
 
-    return () => {
-      window.removeEventListener("scroll", scrollHandler);
-    };
-  }, [router.pathname]);
+    // 라우터 변경이 시작되면..
+    router.events.on("routeChangeStart", () => {
+      cacheScrollPositions.push([window.scrollX, window.scrollY]);
+    });
+
+    // 라우터 변경이 완료되면..
+    router.events.on("routeChangeComplete", () => {
+      if (shouldScrollRestore) {
+        const { x, y } = shouldScrollRestore;
+        window.scrollTo(x, y);
+        shouldScrollRestore = null;
+      }
+      window.history.scrollRestoration = "auto";
+    });
+
+    // 뒤로가기 시..
+    router.beforePopState(() => {
+      console.log(cacheScrollPositions);
+      console.log(shouldScrollRestore);
+
+      if (cacheScrollPositions.length > 0) {
+        const scrollPosition = cacheScrollPositions.pop();
+
+        console.log(scrollPosition);
+
+        if (scrollPosition) {
+          shouldScrollRestore = {
+            x: scrollPosition[0],
+            y: scrollPosition[1],
+          };
+        }
+      }
+      window.history.scrollRestoration = "manual";
+      return true;
+    });
+  }, []);
 };
 
 export default useScrollByPageMove;
